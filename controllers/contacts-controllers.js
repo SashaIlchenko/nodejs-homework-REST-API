@@ -49,13 +49,18 @@ const updateContactById = async (req, res, next) => {
 
 };
 
-const updateStatusContact = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
-    if (!result) {
-        throw HttpError(404, "Not found");
+const updateStatusContact = async (req, res, next) => {
+    try {
+        const { contactId } = req.params;
+        const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
+        if (!result) {
+            throw HttpError(404, "Not found");
+        }
+        res.json(result);
+    } catch (err) {
+        next(err)
     }
-    res.json(result);
+
 }
 
 const deleteContactById = async (req, res, next) => {
