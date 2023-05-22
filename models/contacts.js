@@ -34,7 +34,6 @@ const addSchema = Joi.object({
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
   phone: Joi.string().required(),
   favorite: Joi.boolean(),
-  owner: Joi.object(),
 });
 const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
