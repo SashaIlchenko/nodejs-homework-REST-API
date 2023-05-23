@@ -7,4 +7,5 @@ router.post('/register', validateBody(schemas.registerSchema), userController.re
 router.post('/login', validateBody(schemas.loginSchema), userController.login)
 router.get('/current', authenticate, userController.getCurrentUser)
 router.post('/logout', authenticate, userController.logOut)
+router.patch('/', authenticate, validateBody(schemas.subscriptionSchema), userController.updateSubscription)
 module.exports = router;

@@ -68,10 +68,23 @@ const logOut = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
+};
+
+const updateSubscription = async (req, res, next) => {
+    try {
+        const { _id } = req.user;
+        const newStatus = await User.findByIdAndUpdate(_id, { subscription: req.body.subscription }, { new: true });
+        if (!newStatus) {
+            throw HttpError(404, "Not found");
+        } res.json(newStatus);
+    } catch (error) {
+        next(error)
+    }
 }
 module.exports = {
     register,
     login,
     getCurrentUser,
     logOut,
+    updateSubscription
 }
