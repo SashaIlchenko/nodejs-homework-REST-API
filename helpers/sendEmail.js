@@ -7,25 +7,16 @@ const mailjet = new Mailjet({
     apiKey: MJ_APIKEY_PUBLIC,
     apiSecret: MJ_APIKEY_PRIVATE
 });
-/*
-const data = {
-    to: "",
-    subject: "",
-    html: ""
-}
-*/
 const sendEmail = async (data) => {
     await mailjet.post('send', { version: 'v3.1' }).request({
         Messages: [
             {
                 From: {
                     Email: MJ_SENDER_EMAIL,
-                    // Name: "Mailjet Pilot"
                 },
                 To: [
                     {
                         Email: data.to,
-                        // Name: "hiren"
                     }
                 ],
                 Subject: data.subject,
