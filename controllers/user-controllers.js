@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const gravatar = require("gravatar");
 const path = require("path");
 const Jimp = require("jimp");
+const { nanoid } = require('nanoid');
 const { SECRET_KEY } = process.env;
 const fs = require("fs/promises");
 
@@ -19,17 +20,36 @@ const register = async (req, res, next) => {
             throw HttpError(409, "Email already in use");
         }
         const hashPassword = await bcrypt.hash(password, 10);
+        const verificationCode = nanoid();
         const avatarURL = gravatar.url(email);
-        const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL });
+        const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL, verificationCode });
         res.status(201).json({
             email: newUser.email,
             password: newUser.password,
             avatarURL,
+            verificationCode,
         })
     } catch (error) {
         next(error);
     }
 };
+
+const verify = async (req, res, next) => {
+    try {
+        const { verificationCode } = req.params;
+        const user = await User.findOne({ verificationCode });
+        if (!user) {
+            throw HttpError(404, "Not found");
+        }
+        await User.findByIdAndUpdate(user._id, { verify: true, verificationCode: "" });
+
+        res.json({
+            message: "Verification successful"
+        })
+    } catch (error) {
+        next(error);
+    }
+}
 
 const login = async (req, res, next) => {
     try {
@@ -118,5 +138,6 @@ module.exports = {
     getCurrentUser,
     logOut,
     updateSubscription,
-    updateAvatar
+    updateAvatar,
+    verify
 }
